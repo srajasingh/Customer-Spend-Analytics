@@ -128,11 +128,11 @@
 
     <div class="grid grid-2" style="margin-top:16px;">
       <div class="card">
-        <h3>Fulfilment Mix</h3>
+        <h3>Revenue by Country</h3>
         <div id="chart-fulfil" style="height:300px;"></div>
       </div>
       <div class="card">
-        <h3>Revenue by Day of Week</h3>
+        <h3>Orders by Month</h3>
         <div id="chart-dow" style="height:300px;"></div>
       </div>
     </div>
@@ -220,6 +220,7 @@
 
 <script>
 // ---------------- Navigation ----------------
+let _dashData = null; // store D after load for tab-switch re-renders
 const navBtns = document.querySelectorAll('#nav button');
 navBtns.forEach(b => b.addEventListener('click', () => {
   navBtns.forEach(x => x.classList.remove('active'));
@@ -228,6 +229,11 @@ navBtns.forEach(b => b.addEventListener('click', () => {
   document.getElementById('page-' + b.dataset.page).classList.add('active');
   // Re-fire resize so any newly-shown Plotly charts size correctly
   window.dispatchEvent(new Event('resize'));
+  // Re-draw product charts when switching to products tab (fixes hidden-render bug)
+  if (b.dataset.page === 'products' && _dashData) {
+    const sel = document.getElementById('cat-filter');
+    drawProductCharts(_dashData, sel ? sel.value : '');
+  }
 }));
 
 // ---------------- Helpers ----------------
@@ -249,6 +255,7 @@ const segColors = {
 
 // ---------------- Data load + render ----------------
 fetch('data.json').then(r => r.json()).then(D => {
+  _dashData = D;
   renderOverview(D);
   renderSegmentation(D);
   renderProducts(D);
@@ -314,24 +321,25 @@ function renderOverview(D) {
     textinfo:'label+percent'
   }], {...layoutBase, margin:{t:20,r:20,b:20,l:20}, showlegend:false},
      {displayModeBar:false, responsive:true});
-  // Rename title for accuracy
-  document.querySelector('#page-overview .grid-2:nth-of-type(2) .card:nth-child(1) h3').textContent
-    = 'Revenue by Country';
 
-  // Day-of-week placeholder: bar of customer counts by segment as quick alt
-  const seg = D.vw_customer_segments;
+  // Orders by Month – real data from vw_monthly_revenue
+  const monthLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const ordersBar = D.vw_monthly_revenue.map(r => ({
+    label: monthLabels[r.month - 1] + ' ' + r.year,
+    orders: r.orders
+  }));
   Plotly.newPlot('chart-dow', [{
     type:'bar',
-    x: seg.map(r=>r.segment),
-    y: seg.map(r=>r.customer_count),
-    marker:{color: seg.map(r=>segColors[r.segment] || '#58a6ff')},
-    hovertemplate:'%{x}<br>%{y} customers<extra></extra>'
+    x: ordersBar.map(r=>r.label),
+    y: ordersBar.map(r=>r.orders),
+    marker:{color:'#f7c249'},
+    hovertemplate:'%{x}<br>%{y} orders<extra></extra>'
   }], {
     ...layoutBase,
-    yaxis:{...layoutBase.yaxis, title:'Customers'}
+    margin:{t:20,r:20,b:70,l:60},
+    xaxis:{...layoutBase.xaxis, tickangle:-45},
+    yaxis:{...layoutBase.yaxis, title:'Orders'}
   }, {displayModeBar:false, responsive:true});
-  document.querySelector('#page-overview .grid-2:nth-of-type(2) .card:nth-child(2) h3').textContent
-    = 'Customers per RFM Segment';
 }
 
 // ============ PAGE 2 ============
