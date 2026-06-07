@@ -1,0 +1,101 @@
+customer_id,n_orders,avg_order_value,peak_order_value,spike_pct,segment,state,is_high_value
+411038,185,739.92,6832.0,823.3,Champions,Maharashtra,1
+700006,30,910.33,8081.0,787.7,Champions,West Bengal,1
+500018,226,732.5,6313.0,761.8,Champions,Telangana,1
+500020,111,796.57,6509.0,717.1,Champions,Telangana,1
+208001,52,1084.88,8636.0,696.0,Champions,Uttar Pradesh,1
+400058,75,750.99,5908.0,686.7,Champions,Maharashtra,1
+575006,57,831.79,6535.0,685.7,Champions,Karnataka,1
+500055,105,711.25,5475.0,669.8,Champions,Telangana,1
+221010,49,786.47,5951.0,656.7,Champions,Uttar Pradesh,1
+600130,43,865.72,6536.0,655.0,Champions,Tamil Nadu,1
+500044,69,898.25,6680.0,643.7,Champions,Telangana,1
+201012,89,771.09,5513.0,615.0,Champions,Uttar Pradesh,1
+797112,99,991.79,6993.0,605.1,Champions,Nagaland,1
+500072,350,705.88,4971.0,604.2,Champions,Telangana,1
+400064,177,710.81,4978.0,600.3,Champions,Maharashtra,1
+560084,84,701.89,4871.0,594.0,Champions,Karnataka,1
+134109,42,904.19,6198.0,585.5,Champions,Haryana,1
+600073,148,780.05,5228.0,570.2,Champions,Tamil Nadu,1
+410206,267,674.04,4425.0,556.5,Champions,Maharashtra,1
+500083,74,705.68,4569.0,547.5,Champions,Telangana,1
+248001,332,749.45,4835.0,545.1,Champions,Uttarakhand,1
+522007,35,999.29,6282.0,528.6,Champions,Andhra Pradesh,1
+400071,126,774.87,4809.0,520.6,Champions,Maharashtra,1
+600042,121,687.64,4210.0,512.2,Champions,Tamil Nadu,1
+533003,34,859.59,5186.0,503.3,Champions,Andhra Pradesh,1
+400602,45,788.27,4656.0,490.7,Champions,Maharashtra,1
+600078,78,689.4,3961.0,474.6,Champions,Tamil Nadu,1
+500050,152,758.98,4293.0,465.6,Champions,Telangana,1
+421204,147,720.54,4057.0,463.0,Champions,Maharashtra,1
+382480,12,1128.5,6268.0,455.4,Champions,Gujarat,1
+400012,87,731.51,4003.0,447.2,Champions,Maharashtra,1
+500049,345,701.08,3814.0,444.0,Champions,Telangana,1
+400103,63,822.02,4432.0,439.2,Champions,Maharashtra,1
+411037,71,707.87,3786.0,434.8,Champions,Maharashtra,1
+144022,27,1034.0,5495.0,431.4,Champions,Punjab,1
+641035,59,792.71,4140.0,422.3,Champions,Tamil Nadu,1
+638011,14,885.21,4603.0,420.0,Champions,Tamil Nadu,1
+302020,97,748.48,3869.0,416.9,Champions,Rajasthan,1
+600001,37,737.0,3795.0,414.9,Champions,Tamil Nadu,1
+520010,41,696.05,3573.0,413.3,Champions,Andhra Pradesh,1
+201301,790,737.7,3769.0,410.9,Champions,Uttar Pradesh,1
+515001,69,673.07,3422.0,408.4,Champions,Andhra Pradesh,1
+400092,122,693.86,3525.0,408.0,Champions,Maharashtra,1
+560103,236,763.78,3827.0,401.1,Champions,Karnataka,1
+500085,140,733.0,3671.0,400.8,Champions,Telangana,1
+560086,59,842.14,4185.0,397.0,Champions,Karnataka,1
+411030,57,706.25,3508.0,396.7,Champions,Maharashtra,1
+226021,103,775.9,3818.0,392.1,Champions,Uttar Pradesh,1
+560043,401,695.97,3404.0,389.1,Champions,Karnataka,1
+500028,113,753.25,3673.0,387.6,Champions,Telangana,1
+400093,154,627.14,3046.0,385.7,Champions,Maharashtra,1
+700029,31,761.97,3686.0,383.7,Champions,West Bengal,1
+110058,113,676.29,3268.0,383.2,Champions,Delhi,1
+415002,22,905.05,4336.0,379.1,Champions,Maharashtra,1
+560098,120,682.31,3262.0,378.1,Champions,Karnataka,1
+524003,41,796.83,3807.0,377.8,Champions,Andhra Pradesh,1
+500012,22,695.73,3321.0,377.3,Loyal,Telangana,1
+226003,78,826.51,3938.0,376.5,Champions,Uttar Pradesh,1
+400095,80,766.7,3646.0,375.5,Champions,Maharashtra,1
+400102,49,707.78,3332.0,370.8,Champions,Maharashtra,1
+560054,78,726.95,3414.0,369.6,Champions,Karnataka,1
+110085,272,761.64,3558.0,367.2,Champions,Delhi,1
+400081,98,729.51,3397.0,365.7,Champions,Maharashtra,1
+560064,309,716.38,3323.0,363.9,Champions,Karnataka,1
+421302,67,760.87,3528.0,363.7,Champions,Maharashtra,1
+121003,106,800.68,3695.0,361.5,Champions,Haryana,1
+530048,28,751.89,3451.0,359.0,Champions,Andhra Pradesh,1
+110037,16,965.13,4396.0,355.5,Champions,Delhi,1
+262701,34,780.21,3549.0,354.9,Champions,Uttar Pradesh,1
+682036,19,982.11,4464.0,354.5,Champions,Kerala,1
+500032,210,774.57,3510.0,353.2,Champions,Telangana,1
+313002,24,915.0,4119.0,350.2,Champions,Rajasthan,1
+500042,12,1061.42,4768.0,349.2,Champions,Telangana,1
+201016,93,711.97,3197.0,349.0,Champions,Uttar Pradesh,1
+243001,54,809.78,3627.0,347.9,Champions,Uttar Pradesh,1
+518002,39,734.28,3287.0,347.6,Champions,Andhra Pradesh,1
+400078,174,728.33,3258.0,347.3,Champions,Maharashtra,1
+520003,24,650.04,2900.0,346.1,Champions,Andhra Pradesh,1
+201306,262,774.71,3447.0,344.9,Champions,Uttar Pradesh,1
+411014,283,733.63,3263.0,344.8,Champions,Maharashtra,1
+500060,77,764.03,3392.0,344.0,Champions,Telangana,1
+421201,179,649.75,2878.0,342.9,Champions,Maharashtra,1
+400061,45,813.4,3600.0,342.6,Champions,Maharashtra,1
+576104,42,759.6,3354.0,341.6,Champions,Karnataka,1
+201010,162,766.88,3362.0,338.4,Champions,Uttar Pradesh,1
+410201,10,873.9,3800.0,334.8,Champions,Maharashtra,1
+605004,18,663.28,2882.0,334.5,Champions,Puducherry,1
+313001,128,768.87,3335.0,333.8,Champions,Rajasthan,1
+500079,81,716.3,3104.0,333.3,Champions,Telangana,1
+500038,77,664.53,2872.0,332.2,Champions,Telangana,1
+110087,59,781.08,3371.0,331.6,Champions,Delhi,1
+560100,397,701.07,3022.0,331.1,Champions,Karnataka,1
+411001,85,723.27,3100.0,328.6,Champions,Maharashtra,1
+600093,45,720.31,3066.0,325.6,Champions,Tamil Nadu,1
+122018,220,770.92,3276.0,324.9,Champions,Haryana,1
+500089,283,745.18,3160.0,324.1,Champions,Telangana,1
+500074,53,822.62,3475.0,322.4,Champions,Telangana,1
+140301,99,746.28,3148.0,321.8,Champions,Punjab,1
+600050,25,727.8,3069.0,321.7,Champions,Tamil Nadu,1
+110075,208,750.85,3163.0,321.3,Champions,Delhi,1

@@ -1,0 +1,48 @@
+state,orders,customers,revenue
+Maharashtra,17568,788,12224770.0
+Karnataka,13755,673,9649981.0
+Telangana,8735,345,6290128.0
+Uttar Pradesh,8292,722,6186656.0
+Tamil Nadu,8902,931,5954349.0
+Delhi,5510,93,4007579.0
+Kerala,4940,1095,3377321.0
+West Bengal,4697,594,3207213.0
+Andhra Pradesh,4102,658,2882206.0
+Haryana,3515,154,2654274.0
+Gujarat,3420,403,2486393.0
+Rajasthan,2092,292,1616840.0
+Madhya Pradesh,1970,289,1452781.0
+Bihar,1650,313,1278682.0
+Odisha,1658,332,1240723.0
+Punjab,1540,226,1115543.0
+Assam,1329,238,929949.0
+Uttarakhand,1223,112,885623.0
+Jharkhand,1126,151,832119.0
+Goa,931,81,593655.0
+Chhattisgarh,733,129,517762.0
+Himachal Pradesh,580,153,446276.0
+Jammu & Kashmir,539,91,410682.0
+Manipur,255,19,202309.0
+Chandigarh,269,23,197698.0
+Puducherry,254,23,175235.0
+Andaman & Nicobar,196,11,139400.0
+Nagaland,147,9,134290.0
+Sikkim,164,12,128712.0
+Meghalaya,159,26,104187.0
+Arunachal Pradesh,114,17,88002.0
+Tripura,120,24,84542.0
+New Delhi,60,25,43619.0
+Dadra And Nagar,49,6,37533.0
+Mizoram,59,9,35640.0
+Ladakh,35,3,34386.0
+Nan,22,1,16641.0
+Lakshadweep,3,3,2441.0
+Orissa,3,3,1737.0
+Rj,2,2,1040.0
+Rajsthan,2,2,964.0
+Nl,2,1,961.0
+Punjab/Mohali/Zirakpur,1,1,568.0
+Rajshthan,1,1,563.0
+Pondicherry,1,1,529.0
+Ar,1,1,493.0
+Pb,1,1,399.0

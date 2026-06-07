@@ -1,0 +1,21 @@
+customer_id,state,city,segment,frequency,monetary,recency_days,rfm_score
+201301,Uttar Pradesh,Noida,Champions,790,582786.0,2,555
+122001,Haryana,Gurugram,Champions,560,425737.0,1,555
+560068,Karnataka,Bengaluru,Champions,494,358913.0,1,555
+560037,Karnataka,Bengaluru,Champions,494,350956.0,1,555
+560076,Karnataka,Bengaluru,Champions,461,324429.0,1,555
+560043,Karnataka,Bengaluru,Champions,401,279085.0,2,555
+560100,Karnataka,Bengaluru,Champions,397,278325.0,1,555
+560066,Karnataka,Bengaluru,Champions,387,272398.0,1,555
+401107,Maharashtra,Thane,Champions,385,268351.0,1,555
+500090,Telangana,Hyderabad,Champions,348,250649.0,1,555
+248001,Uttarakhand,Dehradun,Champions,332,248817.0,1,555
+500072,Telangana,Hyderabad,Champions,350,247057.0,1,555
+411057,Maharashtra,Pune,Champions,345,245852.0,1,555
+560078,Karnataka,Bengaluru,Champions,354,243962.0,1,555
+500049,Telangana,Hyderabad,Champions,345,241873.0,2,555
+500084,Telangana,Hyderabad,Champions,322,232328.0,1,555
+560064,Karnataka,Bengaluru,Champions,309,221360.0,2,555
+500089,Telangana,Hyderabad,Champions,283,210886.0,2,555
+560102,Karnataka,Bengaluru,Champions,284,208987.0,1,555
+411014,Maharashtra,Pune,Champions,283,207616.0,2,555

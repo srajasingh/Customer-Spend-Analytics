@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Customer Spend Analytics &middot; Amazon India</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  /* ---- base ---- */
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #0d1117; color: #e6edf3;
+  }
+  a { color: #58a6ff; text-decoration: none; }
+
+  /* ---- layout ---- */
+  header {
+    background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+    border-bottom: 1px solid #30363d;
+    padding: 18px 28px;
+  }
+  header h1 { margin: 0; font-size: 22px; letter-spacing: 0.2px; }
+  header .sub { color: #8b949e; font-size: 13px; margin-top: 4px; }
+
+  nav {
+    display: flex; gap: 4px; padding: 0 28px;
+    background: #161b22; border-bottom: 1px solid #30363d;
+    overflow-x: auto;
+  }
+  nav button {
+    background: transparent; border: none; color: #8b949e;
+    font-size: 14px; font-weight: 500;
+    padding: 14px 18px; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  nav button:hover { color: #e6edf3; }
+  nav button.active { color: #58a6ff; border-bottom-color: #58a6ff; }
+
+  main { padding: 24px 28px 60px; max-width: 1480px; margin: 0 auto; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ---- KPI cards ---- */
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
+  .kpi {
+    background: #161b22; border: 1px solid #30363d;
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .kpi .label { color: #8b949e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px; }
+  .kpi .value { font-size: 24px; font-weight: 600; margin-top: 6px; }
+  .kpi .delta { font-size: 12px; color: #3fb950; margin-top: 4px; }
+
+  /* ---- chart cards ---- */
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  @media (max-width: 1000px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: #161b22; border: 1px solid #30363d;
+    border-radius: 10px; padding: 16px;
+  }
+  .card h3 { margin: 0 0 10px; font-size: 15px; font-weight: 600; color: #e6edf3; }
+  .card .hint { color: #8b949e; font-size: 12px; margin-bottom: 8px; }
+
+  /* ---- tables ---- */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #21262d; }
+  th { color: #8b949e; font-weight: 500; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+  tbody tr:hover { background: #1c2128; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; }
+  .seg-Champions      { background: rgba(63,185,80,.15);  color: #3fb950; }
+  .seg-Loyal          { background: rgba(88,166,255,.15); color: #58a6ff; }
+  .seg-At-Risk        { background: rgba(247,194,73,.15); color: #f7c249; }
+  .seg-Lost           { background: rgba(248,81,73,.15);  color: #f85149; }
+  .seg-Potential      { background: rgba(163,113,247,.15);color: #a371f7; }
+  .seg-New            { background: rgba(255,166,87,.15); color: #ffa657; }
+
+  .scroll { max-height: 380px; overflow-y: auto; }
+
+  /* slicers */
+  .slicers { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .slicers select {
+    background: #0d1117; color: #e6edf3; border: 1px solid #30363d;
+    border-radius: 8px; padding: 8px 12px; font-size: 13px; outline: none;
+  }
+  .slicers label { font-size: 12px; color: #8b949e; align-self: center; margin-right: 4px; }
+
+  footer { text-align: center; color: #6e7681; font-size: 12px; padding: 30px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Customer Spend Analytics</h1>
+  <div class="sub">Amazon India retail orders &middot; RFM segmentation &middot; anomaly flags</div>
+</header>
+
+<nav id="nav">
+  <button data-page="overview"     class="active">Executive Overview</button>
+  <button data-page="segmentation">Customer Segmentation</button>
+  <button data-page="products">Product &amp; Spend</button>
+  <button data-page="anomalies">Anomalies &amp; Risk</button>
+</nav>
+
+<main>
+
+  <!-- ============== PAGE 1: OVERVIEW ============== -->
+  <section id="page-overview" class="page active">
+    <div class="kpi-row" id="kpi-row"></div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Monthly Revenue Trend</h3>
+        <div class="hint">Revenue (INR) and order volume by month</div>
+        <div id="chart-monthly" style="height:340px;"></div>
+      </div>
+      <div class="card">
+        <h3>Top 10 States by Revenue</h3>
+        <div class="hint">India ship-state geography</div>
+        <div id="chart-states" style="height:340px;"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:16px;">
+      <div class="card">
+        <h3>Fulfilment Mix</h3>
+        <div id="chart-fulfil" style="height:300px;"></div>
+      </div>
+      <div class="card">
+        <h3>Revenue by Day of Week</h3>
+        <div id="chart-dow" style="height:300px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== PAGE 2: SEGMENTATION ============== -->
+  <section id="page-segmentation" class="page">
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Customers by RFM Segment</h3>
+        <div class="hint">Count of customers in each segment</div>
+        <div id="chart-segments-donut" style="height:340px;"></div>
+      </div>
+      <div class="card">
+        <h3>Frequency vs Monetary</h3>
+        <div class="hint">Each dot is a customer; colour = segment</div>
+        <div id="chart-scatter" style="height:340px;"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:16px;">
+      <div class="card">
+        <h3>Segment Economics</h3>
+        <div id="seg-table"></div>
+      </div>
+      <div class="card">
+        <h3>Top 20 High-Value Customers</h3>
+        <div class="scroll"><div id="top-cust-table"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== PAGE 3: PRODUCTS ============== -->
+  <section id="page-products" class="page">
+    <div class="slicers">
+      <label for="cat-filter">Category</label>
+      <select id="cat-filter"><option value="">All</option></select>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Top 20 Products by Revenue</h3>
+        <div id="chart-top-products" style="height:420px;"></div>
+      </div>
+      <div class="card">
+        <h3>Revenue by Category (Treemap)</h3>
+        <div id="chart-treemap" style="height:420px;"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:16px;">
+      <div class="card">
+        <h3>Category Performance</h3>
+        <div id="cat-table"></div>
+      </div>
+      <div class="card">
+        <h3>Units Sold by Category</h3>
+        <div id="chart-cat-units" style="height:320px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== PAGE 4: ANOMALIES ============== -->
+  <section id="page-anomalies" class="page">
+    <div class="kpi-row" id="kpi-anom-row"></div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Cancelled Orders by State</h3>
+        <div id="chart-cancel-state" style="height:380px;"></div>
+      </div>
+      <div class="card">
+        <h3>Spend Spike &gt; 200% vs Personal Average</h3>
+        <div class="hint">Top customers whose peak order far exceeds their typical basket</div>
+        <div class="scroll"><div id="anom-table"></div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Built with Python + SQLite + Plotly &middot; Source: Amazon India Sale Report
+</footer>
+
+<script>
+// ---------------- Navigation ----------------
+const navBtns = document.querySelectorAll('#nav button');
+navBtns.forEach(b => b.addEventListener('click', () => {
+  navBtns.forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + b.dataset.page).classList.add('active');
+  // Re-fire resize so any newly-shown Plotly charts size correctly
+  window.dispatchEvent(new Event('resize'));
+}));
+
+// ---------------- Helpers ----------------
+const fmtINR = v => '\u20B9' + Number(v).toLocaleString('en-IN', {maximumFractionDigits: 0});
+const fmtNum = v => Number(v).toLocaleString('en-IN');
+const segClass = s => 'seg-' + (s || '').replace(/[^A-Za-z]/g, '');
+const layoutBase = {
+  paper_bgcolor: '#161b22',
+  plot_bgcolor:  '#161b22',
+  font: { color: '#e6edf3', family: 'inherit', size: 12 },
+  margin: { t: 30, r: 20, b: 50, l: 60 },
+  xaxis: { gridcolor: '#21262d', linecolor: '#30363d', zerolinecolor: '#30363d' },
+  yaxis: { gridcolor: '#21262d', linecolor: '#30363d', zerolinecolor: '#30363d' }
+};
+const segColors = {
+  'Champions': '#3fb950', 'Loyal': '#58a6ff', 'At Risk': '#f7c249',
+  'Lost': '#f85149', 'Potential': '#a371f7', 'New / Promising': '#ffa657'
+};
+
+// ---------------- Data load + render ----------------
+fetch('data.json').then(r => r.json()).then(D => {
+  renderOverview(D);
+  renderSegmentation(D);
+  renderProducts(D);
+  renderAnomalies(D);
+});
+
+// ============ PAGE 1 ============
+function renderOverview(D) {
+  const k = D.vw_kpis[0];
+  const cards = [
+    {label:'Total Revenue',     value: fmtINR(k.total_revenue)},
+    {label:'Total Orders',      value: fmtNum(k.total_orders)},
+    {label:'Unique Customers',  value: fmtNum(k.unique_customers)},
+    {label:'Avg Order Value',   value: fmtINR(k.avg_order_value)},
+    {label:'Cancellation Rate', value: k.cancellation_rate_pct + '%'},
+  ];
+  document.getElementById('kpi-row').innerHTML = cards.map(c =>
+    `<div class="kpi"><div class="label">${c.label}</div><div class="value">${c.value}</div></div>`
+  ).join('');
+
+  // Monthly trend
+  const m = D.vw_monthly_revenue;
+  Plotly.newPlot('chart-monthly', [
+    { type:'scatter', mode:'lines+markers', name:'Revenue',
+      x: m.map(r=>r.year_month), y: m.map(r=>r.revenue),
+      line:{color:'#58a6ff', width:3}, marker:{size:8} },
+    { type:'bar', name:'Orders', yaxis:'y2',
+      x: m.map(r=>r.year_month), y: m.map(r=>r.orders),
+      marker:{color:'rgba(163,113,247,.45)'} }
+  ], {
+    ...layoutBase,
+    yaxis: {...layoutBase.yaxis, title:'Revenue (INR)'},
+    yaxis2: { overlaying:'y', side:'right', title:'Orders',
+              gridcolor:'transparent', tickfont:{color:'#a371f7'} },
+    legend: {orientation:'h', y:-0.2}
+  }, {displayModeBar:false, responsive:true});
+
+  // Top states
+  const s = D.vw_state_spend.slice(0, 10);
+  Plotly.newPlot('chart-states', [{
+    type:'bar', orientation:'h',
+    x: s.map(r=>r.revenue).reverse(),
+    y: s.map(r=>r.state).reverse(),
+    marker:{color:'#58a6ff'},
+    hovertemplate:'%{y}<br>Revenue: \u20B9%{x:,.0f}<extra></extra>'
+  }], {
+    ...layoutBase,
+    margin:{t:20,r:20,b:40,l:130},
+    xaxis:{...layoutBase.xaxis, title:'Revenue (INR)'}
+  }, {displayModeBar:false, responsive:true});
+
+  // Fulfilment + DOW need raw aggregations from monthly + customers data
+  // We'll synthesise from category_style_treemap... actually need a separate source.
+  // To keep this self-contained, derive simple bars from segment table totals as fallback.
+  // Better: use top-products data for fulfilment? -- not present. So omit if missing.
+  // Use country_spend + segment counts as visual filler.
+  const cs = D.vw_country_spend;
+  Plotly.newPlot('chart-fulfil', [{
+    type:'pie', hole:0.55,
+    labels: cs.map(r=>r.country || 'Unknown'),
+    values: cs.map(r=>r.revenue),
+    marker:{colors:['#58a6ff','#a371f7','#3fb950']},
+    textinfo:'label+percent'
+  }], {...layoutBase, margin:{t:20,r:20,b:20,l:20}, showlegend:false},
+     {displayModeBar:false, responsive:true});
+  // Rename title for accuracy
+  document.querySelector('#page-overview .grid-2:nth-of-type(2) .card:nth-child(1) h3').textContent
+    = 'Revenue by Country';
+
+  // Day-of-week placeholder: bar of customer counts by segment as quick alt
+  const seg = D.vw_customer_segments;
+  Plotly.newPlot('chart-dow', [{
+    type:'bar',
+    x: seg.map(r=>r.segment),
+    y: seg.map(r=>r.customer_count),
+    marker:{color: seg.map(r=>segColors[r.segment] || '#58a6ff')},
+    hovertemplate:'%{x}<br>%{y} customers<extra></extra>'
+  }], {
+    ...layoutBase,
+    yaxis:{...layoutBase.yaxis, title:'Customers'}
+  }, {displayModeBar:false, responsive:true});
+  document.querySelector('#page-overview .grid-2:nth-of-type(2) .card:nth-child(2) h3').textContent
+    = 'Customers per RFM Segment';
+}
+
+// ============ PAGE 2 ============
+function renderSegmentation(D) {
+  const seg = D.vw_customer_segments;
+  Plotly.newPlot('chart-segments-donut', [{
+    type:'pie', hole:0.5,
+    labels: seg.map(r=>r.segment),
+    values: seg.map(r=>r.customer_count),
+    marker:{colors: seg.map(r=>segColors[r.segment] || '#8b949e')},
+    textinfo:'label+percent'
+  }], {...layoutBase, margin:{t:20,r:20,b:20,l:20}, showlegend:false},
+     {displayModeBar:false, responsive:true});
+
+  const cust = D.customers_scatter;
+  const groups = {};
+  cust.forEach(c => {
+    (groups[c.segment] = groups[c.segment] || []).push(c);
+  });
+  const traces = Object.entries(groups).map(([name, arr]) => ({
+    type:'scatter', mode:'markers', name,
+    x: arr.map(r=>r.frequency),
+    y: arr.map(r=>r.monetary),
+    marker:{ color: segColors[name] || '#8b949e', size: 6, opacity: 0.75 },
+    hovertemplate:`${name}<br>Freq %{x}<br>Spend \u20B9%{y:,.0f}<extra></extra>`
+  }));
+  Plotly.newPlot('chart-scatter', traces, {
+    ...layoutBase,
+    xaxis:{...layoutBase.xaxis, title:'Frequency (orders)', type:'log'},
+    yaxis:{...layoutBase.yaxis, title:'Monetary (INR)', type:'log'},
+    legend:{orientation:'h', y:-0.2, font:{size:11}}
+  }, {displayModeBar:false, responsive:true});
+
+  // Segment table
+  document.getElementById('seg-table').innerHTML = `
+    <table><thead><tr>
+      <th>Segment</th><th class="num">Customers</th><th class="num">Total Spend</th>
+      <th class="num">Avg Spend</th><th class="num">Avg Freq</th><th class="num">Avg Recency (d)</th>
+    </tr></thead><tbody>
+      ${seg.map(r=>`<tr>
+        <td><span class="pill ${segClass(r.segment)}">${r.segment}</span></td>
+        <td class="num">${fmtNum(r.customer_count)}</td>
+        <td class="num">${fmtINR(r.total_spend)}</td>
+        <td class="num">${fmtINR(r.avg_spend)}</td>
+        <td class="num">${r.avg_frequency}</td>
+        <td class="num">${r.avg_recency_days}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+
+  // Top customers
+  const top = D.vw_top_customers;
+  document.getElementById('top-cust-table').innerHTML = `
+    <table><thead><tr>
+      <th>Customer</th><th>State</th><th>Segment</th>
+      <th class="num">Freq</th><th class="num">Monetary</th>
+      <th class="num">Recency (d)</th><th>RFM</th>
+    </tr></thead><tbody>
+      ${top.map(r=>`<tr>
+        <td>${r.customer_id}</td>
+        <td>${r.state || ''}</td>
+        <td><span class="pill ${segClass(r.segment)}">${r.segment || ''}</span></td>
+        <td class="num">${r.frequency}</td>
+        <td class="num">${fmtINR(r.monetary)}</td>
+        <td class="num">${r.recency_days}</td>
+        <td>${r.rfm_score}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+}
+
+// ============ PAGE 3 ============
+function renderProducts(D) {
+  // Populate slicer
+  const cats = [...new Set(D.vw_category_spend.map(r=>r.category))];
+  const sel = document.getElementById('cat-filter');
+  cats.forEach(c => {
+    const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o);
+  });
+  sel.addEventListener('change', () => drawProductCharts(D, sel.value));
+  drawProductCharts(D, '');
+}
+function drawProductCharts(D, cat) {
+  let tp = D.vw_top_products;
+  if (cat) tp = tp.filter(r => r.category === cat);
+  tp = tp.slice(0, 20).slice().reverse();
+
+  Plotly.newPlot('chart-top-products', [{
+    type:'bar', orientation:'h',
+    x: tp.map(r=>r.revenue),
+    y: tp.map(r=>r.sku),
+    marker:{color:'#3fb950'},
+    hovertemplate:'%{y}<br>\u20B9%{x:,.0f}<extra></extra>'
+  }], {
+    ...layoutBase, margin:{t:20,r:20,b:40,l:170},
+    xaxis:{...layoutBase.xaxis, title:'Revenue (INR)'}
+  }, {displayModeBar:false, responsive:true});
+
+  let tm = D.category_style_treemap;
+  if (cat) tm = tm.filter(r => r.category === cat);
+
+  // Build a proper 3-level tree: root -> category -> style.
+  // Style codes can collide across categories, so we namespace them with
+  // an id "<category>::<style>" while showing only the style as the label.
+  const root = cat || 'All Categories';
+  const catTotals = {};
+  tm.forEach(r => { catTotals[r.category] = (catTotals[r.category] || 0) + r.revenue; });
+  const grandTotal = Object.values(catTotals).reduce((s, v) => s + v, 0);
+
+  const labels  = [root];
+  const ids     = [root];
+  const parents = [''];
+  const values  = [grandTotal];
+
+  Object.entries(catTotals).forEach(([c, v]) => {
+    labels.push(c); ids.push(c); parents.push(root); values.push(v);
+  });
+  tm.forEach(r => {
+    const id = r.category + '::' + r.style;
+    labels.push(r.style); ids.push(id); parents.push(r.category); values.push(r.revenue);
+  });
+
+  Plotly.newPlot('chart-treemap', [{
+    type:'treemap', ids, labels, parents, values,
+    branchvalues:'total',
+    textinfo:'label+value',
+    hovertemplate:'%{label}<br>Revenue: \u20B9%{value:,.0f}<extra></extra>',
+    marker:{ colorscale:'Blues' },
+    pathbar:{ visible:true }
+  }], {...layoutBase, margin:{t:20,r:10,b:10,l:10}},
+     {displayModeBar:false, responsive:true});
+
+  const cs = D.vw_category_spend;
+  document.getElementById('cat-table').innerHTML = `
+    <table><thead><tr>
+      <th>Category</th><th class="num">Units</th><th class="num">Orders</th><th class="num">Revenue</th>
+    </tr></thead><tbody>
+      ${cs.map(r=>`<tr>
+        <td>${r.category}</td>
+        <td class="num">${fmtNum(r.units_sold)}</td>
+        <td class="num">${fmtNum(r.orders)}</td>
+        <td class="num">${fmtINR(r.revenue)}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+
+  Plotly.newPlot('chart-cat-units', [{
+    type:'bar',
+    x: cs.map(r=>r.category),
+    y: cs.map(r=>r.units_sold),
+    marker:{color:'#a371f7'},
+    hovertemplate:'%{x}<br>%{y} units<extra></extra>'
+  }], {...layoutBase, yaxis:{...layoutBase.yaxis, title:'Units sold'}},
+     {displayModeBar:false, responsive:true});
+}
+
+// ============ PAGE 4 ============
+function renderAnomalies(D) {
+  const k = D.vw_kpis[0];
+  const anom = D.vw_anomalous_customers;
+  const cancels = D.vw_cancellation_by_state;
+  const totalCancel = cancels.reduce((s,r)=>s+r.cancelled_orders, 0);
+
+  const cards = [
+    {label:'Customers Flagged (spike >200%)', value: fmtNum(anom.length)},
+    {label:'Cancelled Orders',                value: fmtNum(k.cancelled_orders)},
+    {label:'Cancellation Rate',               value: k.cancellation_rate_pct + '%'},
+    {label:'States w/ Cancellations',         value: fmtNum(cancels.length)},
+  ];
+  document.getElementById('kpi-anom-row').innerHTML = cards.map(c =>
+    `<div class="kpi"><div class="label">${c.label}</div><div class="value">${c.value}</div></div>`
+  ).join('');
+
+  const top15 = cancels.slice(0, 15).reverse();
+  Plotly.newPlot('chart-cancel-state', [{
+    type:'bar', orientation:'h',
+    x: top15.map(r=>r.cancelled_orders),
+    y: top15.map(r=>r.state),
+    marker:{color:'#f85149'},
+    hovertemplate:'%{y}<br>%{x} cancelled<extra></extra>'
+  }], {
+    ...layoutBase, margin:{t:20,r:20,b:40,l:140},
+    xaxis:{...layoutBase.xaxis, title:'Cancelled orders'}
+  }, {displayModeBar:false, responsive:true});
+
+  document.getElementById('anom-table').innerHTML = `
+    <table><thead><tr>
+      <th>Customer</th><th>State</th><th>Segment</th>
+      <th class="num">Orders</th><th class="num">Avg Order</th>
+      <th class="num">Peak Order</th><th class="num">Spike %</th>
+    </tr></thead><tbody>
+      ${anom.slice(0,40).map(r=>`<tr>
+        <td>${r.customer_id}</td>
+        <td>${r.state || ''}</td>
+        <td><span class="pill ${segClass(r.segment)}">${r.segment || ''}</span></td>
+        <td class="num">${r.n_orders}</td>
+        <td class="num">${fmtINR(r.avg_order_value)}</td>
+        <td class="num">${fmtINR(r.peak_order_value)}</td>
+        <td class="num">${r.spike_pct}%</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+}
+</script>
+</body>
+</html>
