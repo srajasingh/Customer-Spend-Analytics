@@ -3,6 +3,7 @@
 <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&pause=1000&color=58A6FF&center=true&vCenter=true&width=700&lines=Customer+Spend+Analytics;Amazon+India+%7C+100k%2B+Orders;Python+%E2%86%92+SQLite+%E2%86%92+Plotly+Dashboard" alt="Typing SVG" />
 
 <br/>
+<img src="images/banner.png" alt="Banner" width="100%"/>
 
 ![Banner](images/banner.png)
 
