@@ -4,6 +4,8 @@
 
 <br/>
 
+![Banner](images/banner.png)
+
 [![Live Dashboard](https://img.shields.io/badge/%F0%9F%9A%80%20Live%20Dashboard-View%20Now-58a6ff?style=for-the-badge)](https://srajasingh.github.io/Customer-Spend-Analytics/)
 &nbsp;
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
