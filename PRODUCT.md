@@ -88,16 +88,16 @@ Sprint 1 reached **62% completion** with 8 of 13 points done, tracked via burndo
 ### Screenshots
 
 **Sprint Board** — active sprint with realistic To Do / In Progress / Done distribution
-`![Board](./screenshots/board.png)`
+![Board](./screenshots/board.png)
 
 **Backlog** — epics, stories, acceptance criteria, story points
-`![Backlog](./screenshots/backlog.png)`
+![Backlog](./screenshots/backlog.png)
 
 **Roadmap Timeline** — epics plotted across sprints
-`![Timeline](./screenshots/timeline.png)`
+![Timeline](./screenshots/timeline.png)
 
 **Sprint Burndown** — velocity tracking, 8/13 points complete
-`![Burndown](./screenshots/burndown.png)`
+![Burndown](./screenshots/burndown.png)
 
 ---
 
